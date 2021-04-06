@@ -1,0 +1,325 @@
+### Variables
+    set $mod Mod4
+    set $left h
+    set $down j
+    set $up k
+    set $right l
+    set $term alacritty
+    # set $menu dmenu_path | dmenu | xargs swaymsg exec --
+    set $menu rofi -combi-modi "window,drun,run" -show combi -modi combi -lines 10 -font ubuntu\ 13 -hide-scrollbar
+    #set $lock  "swaylock --screenshots --effect-blur 6x6 --fade-in 0.2 --clock --indicator --effect-vignette 0.2:0.7 \
+		   #--indicator-radius 125 --indicator-thickness 6 --ring-color 333333 --key-hl-color ff0000 \
+		   #--line-color 222222 --effect-greyscale --inside-color 181818de"
+
+### Autostart
+    exec '$HOME/.config/sway/custom/verify_wlsunset.sh -s'
+    # exec_always $HOME/.config/sway/custom/microphone_status.sh
+    exec '/usr/lib/xdg-desktop-portal-wlr -r /usr/lib/xdg-desktop-portal-wlr -o DP-1'
+    exec_always '$HOME/.config/sway/custom/caffeine.sh --start'
+    exec_always '$HOME/.config/sway/custom/skype-mic-toggle.sh -p'
+
+### Output configuration
+    output DP-2 bg /home/amazingefren/Wallpaper/MAIN-orange-ring.png fill
+    output DP-1 bg /home/amazingefren/Wallpaper/UW-blue-abstract.png fill
+    output DP-2 resolution 2560x1440@143.912Hz position 1280,0 transform 180
+     output DP-1 resolution 5120x1440@120.000Hz position 0,1440
+    # output DP-1 resolution 2560x1440@120.000Hz position 0,1440
+
+### System Configuration
+    #exec swayidle -w \
+        #timeout 300 $lock \
+        #before-sleep $lock
+    
+    input type:keyboard repeat_delay 300
+    input type:keyboard repeat_rate 35
+### Key bindings
+    ## System
+        # Caffeine
+        bindsym $mod+p exec '$HOME/.config/sway/custom/caffeine.sh'
+        # Kill
+        bindsym $mod+Shift+q kill
+        # Mouse Tiling
+        floating_modifier $mod normal
+        # Reload Config
+        bindsym $mod+Shift+r reload
+        # Color Picker
+        bindsym $mod+Shift+p exec '$HOME/.config/sway/custom/wl_color_picker.sh'
+	    # Toggle Microphone
+	        # bindsym $mod+m exec 'amixer -D pulse sset Capture toggle'
+	        bindsym $mod+m exec '$HOME/.config/sway/custom/microphone_status.sh -t'
+            # mute google-chrome input
+            bindsym $mod+n exec '$HOME/.config/sway/custom/skype-mic-toggle.sh'
+        # Toggle wlsunset
+        bindsym $mod+Shift+b exec '$HOME/.config/sway/custom/verify_wlsunset.sh -t'
+
+
+    ## Applications
+        # Terminal
+        bindsym $mod+Return exec $term
+        # Firefox
+        bindsym $mod+Shift+Return exec firefox
+        # Launcher 
+        bindsym $mod+d exec $menu
+
+    ## Moving around:
+        # Focus
+        bindsym $mod+$left focus left
+        bindsym $mod+$down focus down
+        bindsym $mod+$up focus up
+        bindsym $mod+$right focus right
+        # Move Window
+        bindsym $mod+Shift+$left move left
+        bindsym $mod+Shift+$down move down
+        bindsym $mod+Shift+$up move up
+        bindsym $mod+Shift+$right move right
+
+    ##  Workspaces:
+        # Switch Workspace
+        set $ws1 "1:Code"
+        set $ws2 "2:Web"
+        set $ws3 "3:Server"
+        set $ws4 "4:Gaming"
+        set $ws5 "5:Extra"
+        set $ws6 "6:Misc"
+        set $ws0 ""
+
+        bindsym $mod+1 workspace $ws1
+        bindsym $mod+2 workspace $ws2
+        bindsym $mod+3 workspace $ws3
+        bindsym $mod+4 workspace $ws4
+        bindsym $mod+5 workspace $ws5
+        bindsym $mod+6 workspace $ws6
+
+        # Monitor Assignments
+        workspace $ws1 output DP-1 
+        workspace $ws2 output DP-1
+        workspace $ws3 output DP-1
+        workspace $ws4 output DP-1
+        workspace $ws5 output DP-2
+        workspace $ws6 output DP-2
+
+        # Move Window to Workspace
+        bindsym $mod+Shift+1 move container to workspace $ws1; workspace $ws1
+        bindsym $mod+Shift+2 move container to workspace $ws2; workspace $ws2
+        bindsym $mod+Shift+3 move container to workspace $ws3; workspace $ws3
+        bindsym $mod+Shift+4 move container to workspace $ws4; workspace $ws4
+        bindsym $mod+Shift+5 move container to workspace $ws5; workspace $ws5
+        bindsym $mod+Shift+6 move container to workspace $ws6; workspace $ws6
+
+    ## Layout
+    	# Horizontal Split
+        bindsym $mod+b splith
+    	# Vertical Split
+        bindsym $mod+v splitv
+	# Toggle Split
+        bindsym $mod+q split toggle
+        # Switch Layout for Focused Workspace
+        bindsym $mod+s layout stacking
+        bindsym $mod+w layout tabbed
+        bindsym $mod+e layout toggle split
+        # Fullscreen Application
+        bindsym $mod+f fullscreen
+        # Toggle Floating Application
+        bindsym $mod+Shift+space floating toggle
+        # Toggle Between Floating and Tiled Applications
+        bindsym $mod+space focus mode_toggle
+        # Focus Parent
+        bindsym $mod+a focus parent mode_toggle
+	    # Focus Child
+	    bindsym $mod+c focus child
+
+    ## Scratchpad
+        # Move to Scratchpad
+        bindsym $mod+Shift+minus move scratchpad
+        # Show/Cycle Scrathpad
+        bindsym $mod+minus scratchpad show
+
+    ## Resize Mode
+        mode "resize" {
+            bindsym $left resize shrink width 10px
+            bindsym $down resize grow height 10px
+            bindsym $up resize shrink height 10px
+            bindsym $right resize grow width 10px
+            bindsym Return mode "default"
+            bindsym Escape mode "default"
+        }
+	# Enter Resize Mode        
+        bindsym $mod+r mode "resize"
+    
+    ## Power Mode
+        set $Power-System  Power: S-Shutdown, R-Restart, L-Lock, E-Exit, Q-Suspend
+        mode "$Power-System" {
+            bindsym q       exec --no-startup-id systemctl suspend, 	mode "default"
+            bindsym r       exec --no-startup-id systemctl reboot, 		mode "default"
+            bindsym s     exec --no-startup-id systemctl poweroff -i, mode "default"
+            bindsym l       exec --no-startup-id $lock, 				mode "default"
+        
+            bindsym Return  mode "default"
+            bindsym Escape  mode "default"
+        }
+	# Enter Power Mode
+        bindsym $mod+0          mode "$Power-System"
+
+### Bar
+    bar {
+        output DP-1
+        id main
+        mode hide
+        tray_output none
+        # swaybar_command waybar
+	    status_command bumblebee-status \
+	        -m weather stock sensors2 datetime \
+	        -p weather.unit=imperial weather.showminmax=true \
+	           stock.symbols=GME,AMC,CRSR stock.change=false \
+	           sensors2.showother=false \
+	           sensors2.chip_exclude=amdgpu-pci-2d00,nvme-pci-0100 \
+	           sensors2.field_exclude=temp \
+	        -t gruvbox
+            position bottom
+	    colors {
+	        background #282828
+	        # focused_workspace #222222 #fbf1c7 #3c3836
+	        # urgent_workspace #cc241d #fb4939 #282828
+                statusline #FFFFFF
+                separator  #666666
+
+                focused_workspace  #333333 #665C54 #FBF1C7
+                active_workspace   #333333 #282828 #A89984
+                inactive_workspace #333333 #282828 #A89984
+                urgent_workspace   #CC241D #FB4939 #282828
+                binding_mode       #D79921 #FABD2F #282828
+	    }
+	    font SF Mono Powerline Medium 13 
+	    gaps 0 8 0 8 
+	    height 26 
+	    status_edge_padding 125 
+	    status_padding 0
+	    # workspace_min_width 30
+	    tray_padding 6 
+    }
+
+    bar {
+        output DP-2 
+        id secondary
+        tray_output DP-2
+        # swaybar_command waybar
+	    status_command bumblebee-status \
+	        -m weather datetime \
+	        -p weather.unit=imperial weather.showminmax=true \
+	        -t gruvbox
+            position top
+	    colors {
+	        background #282828
+	        # focused_workspace #222222 #fbf1c7 #3c3836
+	        # urgent_workspace #cc241d #fb4939 #282828
+                statusline #FFFFFF
+                separator  #666666
+
+                focused_workspace  #333333 #665C54 #FBF1C7
+                active_workspace   #333333 #282828 #A89984
+                inactive_workspace #333333 #282828 #A89984
+                urgent_workspace   #CC241D #FB4939 #282828
+                binding_mode       #D79921 #FABD2F #282828
+	    }
+	    font SF Mono Powerline Medium 12
+	    height 26 
+	    status_padding 0
+	    # workspace_min_width 30
+        output DP-2
+    }
+
+### Customziation 
+    ## Gaps
+        gaps left 4
+        gaps right 4
+        gaps inner 4 
+        workspace $ws5 gaps outer 0
+        workspace $ws5 gaps inner 0
+        workspace $ws6 gaps outer 0
+        workspace $ws6 gaps inner 0
+        set $mode_gaps Gaps: (o) outer, (i) inner
+        set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
+        set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
+        bindsym $mod+Shift+g mode "$mode_gaps"
+        
+        mode "$mode_gaps" {
+                bindsym o      mode "$mode_gaps_outer"
+                bindsym i      mode "$mode_gaps_inner"
+                bindsym Return mode "default"
+                bindsym Escape mode "default"
+        }
+        mode "$mode_gaps_inner" {
+                bindsym equal  gaps inner current plus 5
+                bindsym minus gaps inner current minus 5
+                bindsym 0     gaps inner current set 0
+        
+                bindsym Shift+plus  gaps inner all plus 5
+                bindsym Shift+minus gaps inner all minus 5
+                bindsym Shift+0     gaps inner all set 0
+        
+                bindsym Return mode "default"
+                bindsym Escape mode "default"
+        }
+        mode "$mode_gaps_outer" {
+                bindsym equal  gaps outer current plus 5
+                bindsym minus gaps outer current minus 5
+                bindsym 0     gaps outer current set 0
+        
+                bindsym Shift+plus  gaps outer all plus 5
+                bindsym Shift+minus gaps outer all minus 5
+                bindsym Shift+0     gaps outer all set 0
+        
+                bindsym Return mode "default"
+                bindsym Escape mode "default"
+        }
+
+    ## Colorscheme
+	# class                 border  bground text    indicator child_border
+	# client.focused          #000000 #474747 #FFFFFF #F4F4F4   #474747
+	# client.focused_inactive #000000 #222222 #7D7D7D #222222   #222222
+	# client.unfocused        #000000 #222222 #7D7D7D #222222   #222222
+	# client.urgent           #164690 #96C2EA #191919 #164690   #164690
+	# client.placeholder      #000000 #7D7D7D #C8FFA1 #000000   #0C0C0C
+	# client.background       #383838
+	client.focused          #3C3836 #504945 #FBF1C7 #FE8019   #504945
+	client.focused_inactive #282828 #282828 #A89984 #FE8019   #282828
+	client.unfocused        #282828 #282828 #A89984 #FE8019   #282828
+	client.urgent           #FB4934 #FB4934 #32302F #FE8019   #FB4934
+	client.placeholder      #458588 #458588 #FBF1C7 #FE8019   #458588
+	
+	client.background       #FFFFFF
+
+    ## Sway Titlebar/Border
+	font pango:IBM Plex Sans Condensed Bold 9 
+	title_align center
+    default_border normal 0
+    #default_border pixel 3
+    #default_border none
+	hide_edge_borders smart
+	titlebar_padding 4 
+
+### Window Configuration
+bindsym $mod+Shift+f exec "$HOME/Code/sway-toggle/target/debug/sway-toggle"
+# assign [title="web.skype.com*"] $ws6
+# no_focus [window_role="popup"]
+# assign [window_role="popup"] $ws6
+# for_window [window_role="popup"] floating enable
+# for_window [window_role="pop-up"] floating enable
+for_window [window_role="bubble"] floating enable 
+for_window [window_role="task_dialog"] floating enable
+for_window [window_role="Preferences"] floating enable
+for_window [window_type="dialog"] floating enable 
+for_window [window_type="menu"] floating enable
+for_window [class="steam_app_*"] floating disable
+for_window [class="steam_app_*"] border none
+for_window [class="Chromium"] inhibit_idle
+for_window [class="Google-chrome"] inhibit_idle
+assign [class="steam_app_*"] $ws6
+assign [class="Steam"] $ws4
+# Garbage Collection
+assign [title="web.skype.com *"] $ws0
+
+#
+#border_images.unfocused /home/amazingefren/Test/sway-border/borders/test.png
+
+include /etc/sway/config.d/*
